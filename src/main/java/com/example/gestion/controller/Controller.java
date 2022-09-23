@@ -88,13 +88,26 @@ public class Controller {
     @PostMapping()
     public ResponseEntity<String> crearUsuario(@Valid @RequestBody() Usuario usuario){
         try {
-            if(!usuarioService.ifExisits(usuario.getId())) {
+            //Si el id es nulo
+            if(usuario.getId() == null) {
+                //Crea al usuario e indica una respuesta CREATED
                 usuarioService.crearUsuario(usuario);
-                return ResponseEntity.status(HttpStatus.CREATED)
-                        .body("Usuario creado con éxito");}
-            else
-                return ResponseEntity.status(HttpStatus.CONFLICT)
+                return ResponseEntity.status(HttpStatus.CREATED).body("Usuario creado con éxito");
+            }
+            //Si no
+            else{
+                //Evalua aún no existe
+                if(!usuarioService.ifExisits(usuario.getId())) {
+                    //Y si no existe, lo crea
+                    usuarioService.crearUsuario(usuario);
+                    return ResponseEntity.status(HttpStatus.CREATED)
+                        .body("Usuario creado con éxito");
+                }
+                //Si sí existe, indica que ya existe
+                else
+                    return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body("Ya existe el usuario con id ".concat(usuario.getId().toString()));
+            }
         }
         catch(DataAccessException e){
             //Indica el error con el acceso a los datos y un status de conflicto
@@ -125,7 +138,7 @@ public class Controller {
                 usuarioService.actualizarUsuario(usuario);
                 //Devuelve status OK e indica que se creó con éxito
                 return ResponseEntity.status(HttpStatus.OK)
-                        .body("Se ha actualizado con éxito el usuario con id".concat(id.toString()));
+                        .body("Se ha actualizado con éxito el usuario con id ".concat(id.toString()));
             }
             //Si no existe
             else
@@ -153,7 +166,7 @@ public class Controller {
                 usuarioService.actualizarUsuario(usuario);
                 //Devuelve status OK e indica que se creó con éxito
                 return ResponseEntity.status(HttpStatus.OK)
-                        .body("Se ha actualizado con éxito el usuario con id".concat(usuario.getId().toString()));
+                        .body("Se ha actualizado con éxito el usuario con id ".concat(usuario.getId().toString()));
             }
             //Si no existe, devuelve un status NOT_FOUND indicando que no se encontro al usuario
             else

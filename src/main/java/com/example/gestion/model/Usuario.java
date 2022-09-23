@@ -19,7 +19,7 @@ public class Usuario {
     /** Imagen del usuario anotada para ser un long object*/
     @Lob
     @Column
-    private byte[] foto;
+    private String foto;
     /** Nombre del usuarios*/
     @Column
     @NotBlank(message = "El nombre no puede estar vacío")
